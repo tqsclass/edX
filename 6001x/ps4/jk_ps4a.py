@@ -178,20 +178,30 @@ def removeOneLetter(hand,letter):
     On entry, word is a string of letters which are removed from hand. word is not mutated.
     
     """
-    number = hand[letter]
-    #print letter, number
+    number = 0
+    if letter in hand:
+        number = hand[letter]
+        # print "letter ",letter,"is in hand. Count: ",number
+    else:
+        #print "letter ",letter," not in hand!!!"
+        raise RuntimeError('Letter not in hand1!')
+                                
     if number > 1:
         number -=1
         hand[letter] = number
-        #print "trimmed letter by 1: ",letter
+        #print "Reduced count for letter by 1 "
     else:
         number = 0
         del hand[letter]
-        #print "deleted letter ", letter
+        #print "Count for letter ", letter, " is zero. Deleting letter."
 
     #print hand
+    #print
     return 
 
+# for testing, note there are 2 'r' letters in 'rapture'
+hand = {'r': 1, 'a': 3, 'p': 2, 'e': 1, 't': 1, 'u':1}
+word = "rapture"
 
 
 #
@@ -208,20 +218,26 @@ def isValidWord(word, hand, wordList):
     hand: dictionary (string -> int)
     wordList: list of lowercase strings
     """
-    # TO DO ... <-- Remove this comment when you code this function
-
+    
     notFail = True
     scratchHand = hand.copy()
+
     # Test 1: is the word in the hand
 
     for letter in word:
-        if letter in scratchHand:
+        #print "\n****\nTest letter ",letter," in hand ",scratchHand
+        try:
             removeOneLetter(scratchHand,letter)
+            #print " ---  remove succeeded  --- "
+        except RuntimeError:
+            #print " ---  Oops got a hand error  --- "
+            return False
+                        
         if len(scratchHand) >=0:
             notFail = True
         else:
             notFail = False
-                
+            
     # Test 2: is the word in wordlist
     if word not in wordList:
          notFail = False
@@ -243,7 +259,11 @@ def calculateHandlen(hand):
     returns: integer
     """
     # TO DO... <-- Remove this comment when you code this function
-
+    length = 0
+    for letter in hand:
+        length += hand[letter]
+        
+    return length
 
 
 def playHand(hand, wordList, n):
