@@ -176,7 +176,20 @@ def playGame(wordList):
             if numberOfHands == 0:
                 print "You have not played a hand yet. Please play a new hand first!\n"
             else:
-                playHand(player_hand,wordList,HAND_SIZE)
+                while True:
+                    player = raw_input('Enter u to have yourself play, c to have the computer play:')
+                    if player == 'u':
+                        #player_hand = dealHand(HAND_SIZE)
+                        playHand(player_hand,wordList,HAND_SIZE)
+                        numberOfHands += 1
+                        break
+                    elif player == 'c':
+                        #player_hand = dealHand(HAND_SIZE)
+                        compPlayHand(player_hand,wordList,HAND_SIZE)
+                        numberOfHands += 1
+                        break
+                    else:
+                        print "Invalid command."
         elif action == 'e':
             #user ended the game
             break
