@@ -291,7 +291,7 @@ def displayEndOfGame(score):
     """
     """
     print "Goodbye! Total score: "+str(score)+" points."
-    return
+    
 
 def displayWordScore(word,points_hand,points_total):
     """
@@ -357,7 +357,7 @@ def playHand(hand, wordList, n):
                 
             
     print "\nRan out of letters. Total score: "+str(TOTAL_SCORE)
-    return
+    #return
     
 
 
@@ -378,9 +378,28 @@ def playGame(wordList):
     2) When done playing the hand, repeat from step 1    
     """
     # TO DO ... <-- Remove this comment when you code this function
-    print "playGame not yet implemented." # <-- Remove this line when you code the function
-   
+    #print "playGame not yet implemented." # <-- Remove this line when you code the function
 
+    numberOfHands = 0
+
+    while True:
+        prompt = 'Enter n to deal a new hand, '
+        prompt = prompt + 'r to replay the last hand or e to end game: '
+        action = raw_input(prompt)
+        if action == 'r':
+            if numberOfHands == 0:
+                print "You have not played a hand yet. Please play a new hand first!\n"
+            else:
+                playHand(player_hand,wordList,HAND_SIZE)
+        elif action == 'e':
+            #user ended the game
+            break
+        elif action == 'n':
+            player_hand = dealHand(HAND_SIZE)
+            playHand(player_hand,wordList,HAND_SIZE)
+            numberOfHands += 1
+        else:
+            print "Invalid command."
 
 
 #
