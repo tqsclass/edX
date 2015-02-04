@@ -266,6 +266,48 @@ def calculateHandlen(hand):
     return length
 
 
+# JK helper routines
+def displayHand2(hand):
+    """
+        Returns an eye-friendly string for hand
+
+        hand: dictionary (string -> int)
+        returns: string
+    """
+    hand_string = ''
+    for letter in hand: #convert dictionary to string
+        num = hand[letter]
+        while num > 0:
+            hand_string = hand_string + letter
+            num -=1
+     
+    sortedHand = ''.join(sorted(hand_string))
+    scratch = ''
+    for letter in sortedHand:
+        scratch = scratch+letter+' '
+    return "Current Hand:  "+scratch
+
+def displayEndOfGame(score):
+    """
+    """
+    print "Goodbye! Total score: "+str(score)+" points."
+    return
+
+def displayWordScore(word,points_hand,points_total):
+    """
+    Returns display string for a successful word
+
+    word - string, user's word
+    points_hand, score for that word
+    points_total, user's total score thus far
+    """
+    scratch = '"'+word+'"'+" earned "+str(points_hand)+ " points. Total: "\
+              +str(points_total)+" points"
+    return scratch
+    
+
+#hand = {'h':1, 'i':1, 'c':1, 'z':1, 'm':2, 'a':1}
+
 def playHand(hand, wordList, n):
     """
     Allows the user to play the given hand, as follows:
@@ -290,32 +332,33 @@ def playHand(hand, wordList, n):
     """
     # BEGIN PSEUDOCODE <-- Remove this comment when you code this function; do your coding within the pseudocode (leaving those comments in-place!)
     # Keep track of the total score
-    
-    # As long as there are still letters left in the hand:
-    
-        # Display the hand
-        
-        # Ask user for input
-        
-        # If the input is a single period:
-        
-            # End the game (break out of the loop)
+    TOTAL_SCORE = 0
+    handSize = n
+    players_hand = hand.copy()
+    #print "Two hands are: \n"+displayHand(hand)
+    #displayHand(players_hand)
 
-            
-        # Otherwise (the input is not a single period):
+    while calculateHandlen(players_hand) > 0 :
+        print displayHand2(players_hand)
+        userWord = raw_input('Enter word, or a "." to indicate that you are finished: ')
         
-            # If the word is not valid:
-            
-                # Reject invalid word (print a message followed by a blank line)
-
-            # Otherwise (the word is valid):
-
-                # Tell the user how many points the word earned, and the updated total score, in one line followed by a blank line
+        if userWord == '.':
+            print displayEndOfGame(TOTAL_SCORE)            
+            return
+        else:
+            if isValidWord(userWord,players_hand,wordList):
+                word_score = getWordScore(userWord,handSize)
+                TOTAL_SCORE += word_score
+                players_hand = updateHand(players_hand,userWord)
+                print displayWordScore(userWord,word_score,TOTAL_SCORE)
+            else:
+                print "Invalid word, please try again."
+                #print "JK "+displayHand(hand)
                 
-                # Update the hand 
-                
-
-    # Game is over (user entered a '.' or ran out of letters), so tell user the total score
+            
+    print "\nRan out of letters. Total score: "+str(TOTAL_SCORE)
+    return
+    
 
 
 #
