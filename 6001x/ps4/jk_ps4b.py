@@ -57,24 +57,6 @@ def compChooseWord(hand, wordList, n):
 
     returns: string or None
     """
-    # BEGIN PSEUDOCODE <-- Remove this comment when you code this function; do your coding within the pseudocode (leaving those comments in-place!)
-    # Create a new variable to store the maximum score seen so far (initially 0)
-
-    # Create a new variable to store the best word seen so far (initially None)  
-
-    # For each word in the wordList
-
-        # If you can construct the word from your hand
-        # (hint: you can use isValidWord, or - since you don't really need to test if the word is in the wordList - you can make a similar function that omits that test)
-
-            # Find out how much making that word is worth
-
-            # If the score for that word is higher than your best score
-
-                # Update your best score, and best word accordingly
-
-
-    # return the best word you found.
 
     best_word = ''
     best_score = 0
@@ -84,14 +66,15 @@ def compChooseWord(hand, wordList, n):
         if len(word) <= n:
             if isWordInHand(word,hand):
                 score = getWordScore(word,n)
-                print str(count) + " \t"+word+ ": "+str(score)
+                #print str(count) + " \t"+word+ ": "+str(score)
                 if score > best_score:
                     best_score=score
                     best_word=word
-        count += 1
-        if count > 10000:
-            break
-    print "best word is " +best_word + ": "+str(best_score)
+    #print "best word is " +best_word + ": "+str(best_score)
+    if len(best_word) > 0:
+        return best_word
+    else:
+        return None
             
                 
     
@@ -120,6 +103,38 @@ def compPlayHand(hand, wordList, n):
     n: integer (HAND_SIZE; i.e., hand size required for additional points)
     """
     # TO DO ... <-- Remove this comment when you code this function
+    compList = wordList
+    comp_hand = hand
+    TOTAL_SCORE = 0
+
+    none_flag = False
+
+    while calculateHandlen(comp_hand) > 0 :
+        print displayHand2(comp_hand)
+
+        comp_word = compChooseWord(comp_hand,wordList,n)
+        if type(comp_word) == str:
+        
+            if isValidWord(comp_word,comp_hand,wordList):
+                word_score = getWordScore(comp_word,n)
+                TOTAL_SCORE += word_score
+                comp_hand = updateHand(comp_hand,comp_word)
+                print displayWordScore(comp_word,word_score,TOTAL_SCORE)
+                print
+            else:
+                print "Invalid word, please try again."
+                #print "JK "+displayHand(hand)
+                
+        else:
+            none_flag = True
+            break
+                           
+    if none_flag:
+        print "Total score: "+str(TOTAL_SCORE)+" points."
+    else:
+        print "\nRan out of letters. Total score: "+str(TOTAL_SCORE)
+    
+        
     
 #
 # Problem #8: Playing a game
@@ -151,6 +166,37 @@ def playGame(wordList):
     """
     # TO DO... <-- Remove this comment when you code this function
     print "playGame not yet implemented." # <-- Remove this when you code this function
+    numberOfHands = 0
+
+    while True:
+        prompt = 'Enter n to deal a new hand, '
+        prompt = prompt + 'r to replay the last hand or e to end game: '
+        action = raw_input(prompt)
+        if action == 'r':
+            if numberOfHands == 0:
+                print "You have not played a hand yet. Please play a new hand first!\n"
+            else:
+                playHand(player_hand,wordList,HAND_SIZE)
+        elif action == 'e':
+            #user ended the game
+            break
+        elif action == 'n':
+            while True:
+                player = raw_input('Enter u to have yourself play, c to have the computer play:')
+                if player == 'u':
+                    player_hand = dealHand(HAND_SIZE)
+                    playHand(player_hand,wordList,HAND_SIZE)
+                    numberOfHands += 1
+                    break
+                elif player == 'c':
+                    player_hand = dealHand(HAND_SIZE)
+                    compPlayHand(player_hand,wordList,HAND_SIZE)
+                    numberOfHands += 1
+                    break
+                else:
+                    print "Invalid command."
+        else:
+            print "Invalid command."
 
         
 #
