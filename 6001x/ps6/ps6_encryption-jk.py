@@ -156,7 +156,32 @@ def findBestShift(wordList, text):
     returns: 0 <= int < 26
     """
     ### TODO
-    return "Not yet implemented." # Remove this comment when you code the function
+    max_words = -1
+    best_shift = 0
+    for shift in range(26):     # shift==0/26 could possibly be skipped
+        cleartext = applyShift(text, shift)
+        words = cleartext.split()   # split on whitespace
+        num_words = 0
+        #print words
+        for word in words:
+            alpha = ''  # get word without punctuation
+            for c in word:
+                if c in string.ascii_letters:
+                    alpha += c
+            if alpha.lower() in wordList:
+                num_words += 1
+                #print word, num_words
+        #print shift, num_words
+        if num_words > max_words:
+            max_words = num_words
+            best_shift = shift
+    return best_shift
+                
+        
+cypher = applyShift("Hello out there!",3)
+        
+    
+    #return "Not yet implemented." # Remove this comment when you code the function
 
 def decryptStory():
     """
@@ -167,10 +192,15 @@ def decryptStory():
 
     returns: string - story in plain text
     """
-    ### TODO.
-    return "Not yet implemented." # Remove this comment when you code the function
+    ### Answer - the key is 16
+    ### Jack Florey is a mythical character created on the spur of a moment to help cover an insufficiently planned hack. He has been registered for classes at MIT twice before, but has reportedly never passed a class. It has been the tradition of the residents of East Campus to become Jack Florey for a few nights each year to educate incoming students in the ways, means, and ethics of hacking.
+    wordList = loadWords()
+    cypher_text = getStoryString();
+    cypher_key = findBestShift(wordList,cypher_text)
+    clear_text = applyShift(cypher_text,cypher_key)
+    return clear_text
 
-#
+
 # Build data structures used for entire session and run encryption
 #
 
@@ -182,3 +212,7 @@ if __name__ == '__main__':
     assert applyShift(s, bestShift) == 'Hello, world!'
     # To test decryptStory, comment the above four lines and uncomment this line:
     #    decryptStory()
+
+
+print findBestShift(wordList,cypher)
+print decryptStory()
