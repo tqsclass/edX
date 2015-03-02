@@ -174,14 +174,6 @@ print tt.evaluate(testns)
 print st.evaluate(testns)
 
 
-                  
-
-
-        
-        
-        
-    
-
 # TODO: WordTrigger
 
 # TODO: TitleTrigger
@@ -215,8 +207,16 @@ def filterStories(stories, triggerlist):
     Returns: a list of only the stories for which a trigger in triggerlist fires.
     """
     # TODO: Problem 10
-    # This is a placeholder (we're just returning all the stories, with no filtering) 
-    return stories
+    # This is a placeholder (we're just returning all the stories, with no filtering
+    keepers = []    # list of stories to keep
+    for story in stories:
+        for trigger in triggerlist:
+            if trigger.evaluate(story):
+                keepers.append(story)
+                break
+            #else we continue
+    
+    return keepers
 
 #======================
 # Part 4
@@ -239,6 +239,31 @@ def makeTrigger(triggerMap, triggerType, params, name):
     Returns a new instance of a trigger (ex: TitleTrigger, AndTrigger).
     """
     # TODO: Problem 11
+    customTrigger = ''
+    if triggerType == 'SUBJECT':
+        customTrigger = SubjectTrigger(params[0])
+    elif triggerType == 'TITLE':
+        customTrigger = TitleTrigger(params[0])
+    elif triggerType == 'SUMMARY':
+        customTrigger = SummaryTrigger(params[0])
+    elif triggerType == 'AND':
+        trigger1 = triggerMap[params[0]]
+        trigger2 = triggerMap[params[1]]
+        customTrigger = AndTrigger(trigger1,trigger2)
+    elif triggerType == 'OR':
+        trigger1 = triggerMap[params[0]]
+        trigger2 = triggerMap[params[1]]
+        customTrigger = OrTrigger(trigger1,trigger2)
+    elif triggerType == 'NOT':
+        customTrigger = NotTrigger(triggerMap[params[0]])
+    elif triggerType == 'PHRASE':
+        phrase = ''
+        for word in params:
+            phrase = phrase + word + ' '
+        customTrigger = PhraseTrigger(phrase.strip())
+            
+    triggerMap[name] = customTrigger
+    return customTrigger
 
 
 def readTriggerConfig(filename):
