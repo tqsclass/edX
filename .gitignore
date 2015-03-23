@@ -90,3 +90,10 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# R
+.RData
+.Rhistory
+
+# Python
+*.pyc
