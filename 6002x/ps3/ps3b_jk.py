@@ -36,19 +36,23 @@ class SimpleVirus(object):
         clearProb: Maximum clearance probability (a float between 0-1).
         """
 
-        # TODO
+        self.maxBirthProb = maxBirthProb
+        self.clearProb = clearProb
+        
 
     def getMaxBirthProb(self):
         """
         Returns the max birth probability.
         """
-        # TODO
+        return self.getMaxBirthProb
+    
 
     def getClearProb(self):
         """
         Returns the clear probability.
         """
-        # TODO
+        return self.clearProb
+    
 
     def doesClear(self):
         """ Stochastically determines whether this virus particle is cleared from the
@@ -56,8 +60,12 @@ class SimpleVirus(object):
         returns: True with probability self.getClearProb and otherwise returns
         False.
         """
-
-        # TODO
+        value = random.random()
+        if value <= self.clearProb:
+            #print 'Does clear value, prob: ',value, self.clearProb
+            return True
+        return False
+        
 
     
     def reproduce(self, popDensity):
@@ -80,8 +88,13 @@ class SimpleVirus(object):
         NoChildException if this virus particle does not reproduce.               
         """
 
-        # TODO
-
+        value = random.random()
+        if value < self.maxBirthProb*(1-popDensity):
+            print 'virus reproduced with value ',value,' and (1-popDensity) ',1-popDensity
+            return SimpleVirus(self.maxBirthProb,self.clearProb)
+        else:
+            raise NoChildException
+        
 
 
 class Patient(object):
@@ -101,20 +114,22 @@ class Patient(object):
         maxPop: the maximum virus population for this patient (an integer)
         """
 
-        # TODO
+        self.viruses = viruses
+        self.maxPop = maxPop
+        
 
     def getViruses(self):
         """
         Returns the viruses in this Patient.
         """
-        # TODO
+        return self.viruses
 
 
     def getMaxPop(self):
         """
         Returns the max population.
         """
-        # TODO
+        return self.maxPop
 
 
     def getTotalPop(self):
@@ -123,7 +138,7 @@ class Patient(object):
         returns: The total virus population (an integer)
         """
 
-        # TODO        
+        return len(self.viruses)       
 
 
     def update(self):
@@ -144,9 +159,62 @@ class Patient(object):
         returns: The total virus population at the end of the update (an
         integer)
         """
+        viruslist = self.viruses[:]
+        for virus in viruslist:
+            if len(self.viruses) > self.maxPop:
+                #print 'max viruses: ',len(self.viruses), self.maxPop
+                return len(self.viruses)
+            
+            if virus.doesClear() == True:
+                print 'Virus cleared. Current ',len(self.viruses),' New ',
+                self.viruses.remove(virus)
+                print len(self.viruses)
+                
+            else:
+                populationDensity = len(self.viruses)/float(self.maxPop)
+                try:
+                    child = virus.reproduce(populationDensity)
+                    self.viruses.append(child)
+                except NoChildException:
+                    # virus did not reproduce
+                    pass
+                
+        return len(self.viruses)
+                                        
+virus = ['a','b','c']
 
-        # TODO
+#
+simple = SimpleVirus(1.00,0.00)
+viruses = []
+for i in range(10):
+    viruses.append(simple)
+patient = Patient(viruses,1000)
 
+##print 'Always Reproduces, Never Clears'            
+##for i in range(20):
+##    print i,' viruses ',patient.update()
+
+#
+simple = SimpleVirus(0.00,1.00)
+viruses = []
+for i in range(10):
+    viruses.append(simple)
+patient = Patient(viruses,1000)
+
+print '\nNever Reproduces, Always Clears'            
+for i in range(10):
+    print i,' viruses ',patient.update()
+
+#
+simple = SimpleVirus(0.00,0.00)
+viruses = []
+for i in range(10):
+    viruses.append(simple)
+patient = Patient(viruses,1000)
+
+print '\nNever Reproduces, Never Clears'            
+for i in range(10):
+    print i,' viruses ',patient.update()
 
 
 #
