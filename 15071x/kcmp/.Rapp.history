@@ -1,0 +1,32 @@
+NewsTrain = read.csv("NYTimesBlogTrain.csv", stringsAsFactors=FALSE)#
+#
+NewsTest = read.csv("NYTimesBlogTest.csv", stringsAsFactors=FALSE)#
+#
+# Now, let's load the "tm" package#
+#
+library(tm)#
+#
+# Then create a corpus from the headline variable. You can use other variables in the dataset for text analytics, but we will just show you how to use this particular variable. #
+# Note that we are creating a corpus out of the training and testing data.#
+#
+CorpusHeadline = Corpus(VectorSource(c(NewsTrain$Headline, NewsTest$Headline)))#
+#
+# You can go through all of the standard pre-processing steps like we did in Unit 5:#
+#
+CorpusHeadline = tm_map(CorpusHeadline, tolower)
+CorpusHeadline = tm_map(CorpusHeadline, PlainTextDocument)#
+#
+CorpusHeadline = tm_map(CorpusHeadline, removePunctuation)#
+#
+CorpusHeadline = tm_map(CorpusHeadline, removeWords, stopwords("english"))
+CorpusHeadline = tm_map(CorpusHeadline, stemDocument)
+getOption("mc.cores",2L) [1] 2#
+> corpus = tm_map(corpus, stemDocument,mc.cores=1)
+getOption("mc.cores",2L) [1] 2
+getOption("mc.cores",2L)
+corpus = tm_map(corpus, stemDocument,mc.cores=1)
+corpus = tm_map(CorpusHeadline, stemDocument,mc.cores=1)
+corpus = tm_map(corpus, stemDocument,lazy=TRUE)
+corpus = tm_map(CorpusHeadline, stemDocument,lazy=TRUE)
+dtm = DocumentTermMatrix(CorpusHeadline)
+exit
