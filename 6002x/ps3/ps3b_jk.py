@@ -3,6 +3,7 @@
 import numpy
 import random
 import pylab
+from ps3b_precompiled_27 import *
 
 ''' 
 Begin helper code
@@ -90,7 +91,7 @@ class SimpleVirus(object):
 
         value = random.random()
         if value < self.maxBirthProb*(1-popDensity):
-            print 'virus reproduced with value ',value,' and (1-popDensity) ',1-popDensity
+            #print 'virus reproduced with value ',value,' and (1-popDensity) ',1-popDensity
             return SimpleVirus(self.maxBirthProb,self.clearProb)
         else:
             raise NoChildException
@@ -166,9 +167,9 @@ class Patient(object):
                 return len(self.viruses)
             
             if virus.doesClear() == True:
-                print 'Virus cleared. Current ',len(self.viruses),' New ',
+                #print 'Virus cleared. Current ',len(self.viruses),' New ',
                 self.viruses.remove(virus)
-                print len(self.viruses)
+                #print len(self.viruses)
                 
             else:
                 populationDensity = len(self.viruses)/float(self.maxPop)
@@ -193,28 +194,28 @@ patient = Patient(viruses,1000)
 ##print 'Always Reproduces, Never Clears'            
 ##for i in range(20):
 ##    print i,' viruses ',patient.update()
-
-#
-simple = SimpleVirus(0.00,1.00)
-viruses = []
-for i in range(10):
-    viruses.append(simple)
-patient = Patient(viruses,1000)
-
-print '\nNever Reproduces, Always Clears'            
-for i in range(10):
-    print i,' viruses ',patient.update()
-
-#
-simple = SimpleVirus(0.00,0.00)
-viruses = []
-for i in range(10):
-    viruses.append(simple)
-patient = Patient(viruses,1000)
-
-print '\nNever Reproduces, Never Clears'            
-for i in range(10):
-    print i,' viruses ',patient.update()
+##
+###
+##simple = SimpleVirus(0.00,1.00)
+##viruses = []
+##for i in range(10):
+##    viruses.append(simple)
+##patient = Patient(viruses,1000)
+##
+##print '\nNever Reproduces, Always Clears'            
+##for i in range(10):
+##    print i,' viruses ',patient.update()
+##
+###
+##simple = SimpleVirus(0.00,0.00)
+##viruses = []
+##for i in range(10):
+##    viruses.append(simple)
+##patient = Patient(viruses,1000)
+##
+##print '\nNever Reproduces, Never Clears'            
+##for i in range(10):
+##    print i,' viruses ',patient.update()
 
 
 #
@@ -236,7 +237,42 @@ def simulationWithoutDrug(numViruses, maxPop, maxBirthProb, clearProb,
     numTrials: number of simulation runs to execute (an integer)
     """
 
-    # TODO
+    viruses = []
+    simple = SimpleVirus(maxBirthProb, clearProb)
+    for i in range(numViruses):
+        viruses.append(simple)
+        
+    patient = Patient(viruses,maxPop)
+
+    averageTimeStep = []
+    allPopulations = []
+    for trial in range(numTrials):
+        populations = []
+        for timestep in range(300):
+            populations.append(patient.update())
+            #print 'timestep ',timestep,populations[-1]
+        #averagePopulation.append(sum(populations)/float(len(populations)))
+        allPopulations.append(populations)
+        #print averagePopulation
+    #print averagePopulation[0:20]
+
+    for i in range(300):
+        total = 0
+        for population in allPopulations:
+            total += population[i]
+        averageTimeStep.append(total/float(numTrials))
+                                 
+    pylab.figure(1)
+    pylab.plot(range(300), averageTimeStep)
+    pylab.title('Average Population')
+    pylab.xlabel('Trial')
+    pylab.ylabel('Population')
+    pylab.legend('hello')
+    pylab.show()
+
+#simulationWithoutDrug(1, 90, 0.8, 0.1, 1)    
+###simulationWithoutDrug(1, 10, 1.0, 0.0, 1)    
+simulationWithoutDrug(100, 1000, 0.10, 0.05, 100)
 
 
 
@@ -266,20 +302,24 @@ class ResistantVirus(SimpleVirus):
         the probability of the offspring acquiring or losing resistance to a drug.
         """
 
-        # TODO
+        self.maxBirthProb = maxBirthProb
+        self.clearProb = clearProb
+        self.resistances = resistances
+        self.mutProb = mutProb
 
 
     def getResistances(self):
         """
         Returns the resistances for this virus.
         """
-        # TODO
+        return self.resistances
 
     def getMutProb(self):
         """
         Returns the mutation probability for this virus.
         """
-        # TODO
+        return self.mutProb
+        
 
     def isResistantTo(self, drug):
         """
@@ -293,7 +333,7 @@ class ResistantVirus(SimpleVirus):
         otherwise.
         """
         
-        # TODO
+        return self.resistances{drug}
 
 
     def reproduce(self, popDensity, activeDrugs):
